@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		canvas{
+			border:1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="600"></canvas>
+	<script type="text/javascript">
+		var canvas=document.getElementById("canvas");
+		var ctx=canvas.getContext("2d");
+		function rand(min,max){
+			return parseInt(Math.random()*(max-min+1)+min);
+		}
+		var cw=canvas.width;
+		var ch=canvas.height;
+		function Snow(){
+			this.r=rand(3,9);
+			this.x=rand(this.r,(cw-this.r));
+			this.y=-this.r;
+			this.speed=rand(2,5)+rand(1,10)*0.1;
+		}
+		Snow.prototype.draw=function(){
+			ctx.beginPath();
+			ctx.fillStyle="white";
+			ctx.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+			ctx.closePath();
+			ctx.fill();
+		}
+		Snow.prototype.down=function(){
+			this.y+=this.speed;
+		}
+		function BG(){
+			ctx.fillStyle="black";
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+		}
+		var snowArr=[];
+		function frame(){
+			ctx.clearRect(0,0,cw,ch)
+			BG();
+			if(snowArr.length<100){
+				snowArr.push(new Snow());
+			}
+			for(var i in snowArr){
+				snowArr[i].draw();
+				snowArr[i].down();
+				if(snowArr[i].y>ch+snowArr[i].r){
+					snowArr[i]=new Snow();
+				}
+			}
+			window.requestAnimationFrame(frame);
+		}
+		window.requestAnimationFrame(frame);
+	</script>
+</body>
+</html>
